@@ -1,0 +1,28 @@
+version: '2'
+services:
+  postgres:
+    volumes:
+      - ./docker/data:/var/lib/postgresql/data
+    image:
+      postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+  pgadminer:
+    image: clue/adminer
+    ports:
+      - "99:80"
+  app:
+    build: ./app
+    depends_on:
+#      - mongoDB
+      - postgres
+    links:
+#      - mongoDB
+      - postgres
+#  mongoDB:
+#    ports:
+#      - "3306:3306"
+#    image:
+#      mongo:latest
