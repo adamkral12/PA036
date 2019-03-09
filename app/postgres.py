@@ -11,15 +11,14 @@ class PostgresDb:
             sleep(1)
             self.__init__()
 
-    def init_schema(self):
-        cur = self.conn.cursor()
-        cur.execute(open("app/schema.sql", "r").read())
-        self.conn.commit()
-        cur.close()
-
     def select(self):
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM test;")
         result = cur.fetchone()
         cur.close()
         return result
+
+    # should measure the amount of time it took to call `callable`
+    # return start, end
+    def run_command(self, callable):
+        pass

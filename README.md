@@ -5,7 +5,8 @@
 2) run ``docker-compose up -d`` 
 3) to stop the containers ``docker-compose down``
 4) rebuild images ``docker-compose up --build``
-5) add any needed packages to `requirements.txt`
+5) If you want to throw out all DB data (even schema), remove `docker/data`
+6) add any needed python packages to `requirements.txt`
 
 ## Adminer
 1) there is an adminer running on `http://localhost:99`
