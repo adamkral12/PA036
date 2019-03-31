@@ -2,7 +2,11 @@
 
 ## Setup
 1) install docker & docker-compose
-2) run ``docker-compose up -d`` 
+2) Add data for postgres
+    - create postgres/emails_with_events.json
+    - create postgres/emails_with_events2.json
+2) run ``docker-compose up -d``
+    - data should be filled from files above 
 3) to stop the containers ``docker-compose down``
 4) rebuild images ``docker-compose up --build``
 5) If you want to throw out all DB data (even schema), remove `docker/data`
