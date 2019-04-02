@@ -2,3 +2,4 @@ docker/
 app/__pycache__/
 postgres/emails_with_events*.json
 postgres/data_small.json
+mongo/emails_with_events.json

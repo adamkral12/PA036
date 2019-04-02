@@ -12,7 +12,7 @@
 5) If you want to throw out all DB data (even schema), remove `docker/data`
 6) add any needed python packages to `requirements.txt`
 7) To connect to connect to a container e.g. postgres: `docker exec -it pa036_postgres bash`
-
+8) 
 ## Adminer
 1) there is an adminer running on `http://localhost:99`
 2) you can check the DB there
