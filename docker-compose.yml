@@ -18,11 +18,7 @@ services:
       - postgres
   mongo:
     volumes:
-      - /docker/data/db/mongo
+      - ./docker/data/db/mongo:/data/db/
     ports:
       - "27017:27017"
-    image:
-      mongo:latest
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: mongo
-#      MONGO_INITDB_ROOT_PASSWORD: mongo
+    build: ./mongo
