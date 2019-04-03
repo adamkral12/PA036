@@ -1,9 +1,15 @@
-version: '2'
+version: '3.7'
 services:
-  postgres:
+  postgres-data:
     volumes:
       - ./docker/data/db/postgres:/var/lib/postgresql/data
-    build: ./postgres
+    build:
+      context: ./postgres
+      target: data
+  postgres-runner:
+    build:
+      context: ./postgres
+      target: runner
   adminer:
     image: clue/adminer
     ports:
@@ -12,10 +18,10 @@ services:
     build: ./app
     depends_on:
       - mongo
-      - postgres
+      - postgres-runner
     links:
       - mongo
-      - postgres
+      - postgres-runner
   mongo:
     volumes:
       - ./docker/data/db/mongo:/data/db/
