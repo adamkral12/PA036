@@ -19,7 +19,7 @@ COPY emails_with_events.json /tmp/emails_with_events.json
 COPY schema.sql /docker-entrypoint-initdb.d/
 RUN docker-entrypoint.sh --help
 
-FROM postgres:latest as runner
+FROM postgres:latest
 
 ENV POSTGRES_USER postgres
 ENV POSTGRES_PASSWORD postgres
