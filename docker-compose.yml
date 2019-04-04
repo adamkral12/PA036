@@ -1,9 +1,8 @@
-version: '2'
+version: '3.7'
 services:
   postgres:
-    volumes:
-      - ./docker/data/db/postgres:/var/lib/postgresql/data
-    build: ./postgres
+    build:
+      context: ./postgres
   adminer:
     image: clue/adminer
     ports:

@@ -18,3 +18,8 @@
 2) you can check the DB there
 3) for postgres - fill out everything to `postgres` and connect
 
+## Notes
+
+When you stop docker-compose with Ctrl+C, it won't delete containers. You need to run `docker-compose down` to do so.
+
+Running `docker-compose build` you populate the databases. Then `docker-compose up` starts the populated database from image. so the database is always fresh = it has all records.

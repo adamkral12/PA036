@@ -13,7 +13,7 @@ CREATE TABLE emails_with_events (
   data json
 );
 
-\set input `cat "/data/postgres/emails_with_events.json"`
+\set input `cat "/tmp/emails_with_events.json"`
 
 with content as (select * from json_array_elements(:'input'))
 
