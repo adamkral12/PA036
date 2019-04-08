@@ -1,4 +1,6 @@
 import psycopg2
+import time
+
 from time import sleep
 
 
@@ -11,14 +13,23 @@ class PostgresDb:
             sleep(1)
             self.__init__()
 
-    def select(self):
+    def execute_one(self, query):
         cur = self.conn.cursor()
-        cur.execute("SELECT * FROM test;")
+        cur.execute(query)
         result = cur.fetchone()
+        cur.close()
+        return result
+
+    def execute_all(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
         cur.close()
         return result
 
     # should measure the amount of time it took to call `callable`
     # return start, end
-    def run_command(self, callable):
-        pass
+    def run_command(self, callable, argument):
+        start_time = time.time()
+        callable(argument)
+        return time.time() - start_time
