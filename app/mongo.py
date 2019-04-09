@@ -1,11 +1,16 @@
 from pymongo import MongoClient
+import time
 
 
 class MongoDB:
     def __init__(self):
-        client = MongoClient("mongodb://mongo:27017")
-        mongo_db = client["mongo"]
-        emails_col = mongo_db["customers"]
-        data = {"name": "John", "address": "Highway 37"}
-        x = emails_col.insert_one(data)
-        print(x.inserted_id)
+        self.client = MongoClient("mongodb://mongo:27017")
+        self.mongo_db = self.client["test"]
+        self.emails_col = self.mongo_db["emails"]
+
+    def run_query(self, yaml_conf):
+        start = time.time()
+        # TODO: milos if method
+        result = self.emails_col.find_one(yaml_conf["mongo"]['query'])
+        end = time.time()
+        return end - start
