@@ -39,6 +39,20 @@ class PostgresDb:
         callable(argument)
         return time.time() - start_time
 
-    def insert(self):
-        element = """{"from":"sureshot-2@earthlink.net","to":"madmike272@hotmail.com","sent":{"date":"2018-08-01 08:00:00.000000","timezone_type":1,"timezone":"+02:00"},"type":"upcoming_journey","events":[{"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b7a14f34d345eda2666d5159c288de"}],"id":"c0b7a14f34d345eda2666d5159c288de"}"""
+    def insert_event(self):
+        events = """{events, 0}"""
+        element = """{"event_type":"test","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"test"}"""
+        return "UPDATE emails_with_events SET data = jsonb_insert(to_jsonb(data), '{0}'::text[], jsonb '{1}') WHERE id = 0".format(events, element)
+
+    def insert_single(self):
+        element = """{"from":"test@test.com","to":"madmike272@hotmail.com","sent":{"date":"2018-08-01 08:00:00.000000","timezone_type":1,"timezone":"+02:00"},"type":"upcoming_journey","events":[{"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b7a14f34d345eda2666d5159c288de"}, {"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b74f34d345eda2666d5159c288de"}],"id":"c0b74f34d345eda2666d5159c288de"}"""
         return "INSERT INTO emails_with_events(id, data) VALUES ('0', '{}')".format(element)
+
+    def insert_multiple(self):
+        element_single_event = """{"from":"test@test.com","to":"madmike272@hotmail.com","sent":{"date":"2018-08-01 08:00:00.000000","timezone_type":1,"timezone":"+02:00"},"type":"upcoming_journey","events":[{"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b7a14f34d345eda2666d5159c288de"}],"id":"c0b7a14f34d345eda2666d5159c288de"}"""
+        element_multiple_events = """{"from":"test@test.com","to":"madmike272@hotmail.com","sent":{"date":"2018-08-01 08:00:00.000000","timezone_type":1,"timezone":"+02:00"},"type":"upcoming_journey","events":[{"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b7a14f34d345eda2666d5159c288de"}, {"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b74f34d345eda2666d5159c288de"}],"id":"c0b74f34d345eda2666d5159c288de"}"""
+        return "INSERT INTO emails_with_events(id, data) VALUES ('11', '{1}'), ('1', '{0}'), ('2', '{1}'), ('3', '{0}'), ('4', '{1}'), ('5', '{0}'), ('6', '{1}'), ('7', '{0}'), ('8', '{1}'), ('9', '{0}'), ('10', '{1}')" \
+            .format(element_single_event, element_multiple_events)
+
+    def delete_by_from(self):
+        return """DELETE FROM emails_with_events WHERE (data ->> 'from') = 'test@test.com'"""
