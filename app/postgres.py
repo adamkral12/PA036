@@ -42,7 +42,7 @@ class PostgresDb:
     def insert_event(self):
         events = """{events, 0}"""
         element = """{"event_type":"test","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"test"}"""
-        return "UPDATE emails_with_events SET data = jsonb_insert(to_jsonb(data), '{0}'::text[], jsonb '{1}') WHERE id = 0".format(events, element)
+        return "UPDATE emails_with_events SET data = jsonb_insert(to_jsonb(data), '{0}'::text[], jsonb '{1}') WHERE id = '0'".format(events, element)
 
     def insert_single(self):
         element = """{"from":"test@test.com","to":"madmike272@hotmail.com","sent":{"date":"2018-08-01 08:00:00.000000","timezone_type":1,"timezone":"+02:00"},"type":"upcoming_journey","events":[{"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b7a14f34d345eda2666d5159c288de"}, {"event_type":"delivery","user_agent":{"browser":null,"platform":null},"position":{"country":null,"city":null,"geographical":{"lat":null,"long":null}},"received":{"date":"2018-08-01 08:04:27.000000","timezone_type":1,"timezone":"+02:00"},"occurred":{"date":"2018-08-01 07:59:59.000000","timezone_type":1,"timezone":"+02:00"},"email_id":"c0b74f34d345eda2666d5159c288de"}],"id":"c0b74f34d345eda2666d5159c288de"}"""
@@ -56,3 +56,12 @@ class PostgresDb:
 
     def delete_by_from(self):
         return """DELETE FROM emails_with_events WHERE (data ->> 'from') = 'test@test.com'"""
+
+    def delete_by_event_device(self):
+        return """DELETE FROM emails_with_events WHERE id in (SELECT id FROM (SELECT id, json_array_elements(data -> 'events') -> 'user_agent' ->> 'platform' as device FROM emails_with_events) as platforms WHERE device = 'Android')"""
+
+    def delete_event_by_event_device(self):
+        return """UPDATE emails_with_events e SET data=jsonb_set(to_jsonb(data), '{events}'::text[], to_jsonb(e2.events)) FROM (SELECT id, json_agg(singleevent) as events FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'user_agent' ->> 'platform' as device FROM emails_with_events) as eventarray WHERE device != 'Linux' GROUP BY id) e2 WHERE e.id = e2.id"""
+
+    def delete_event_by_event_type(self):
+        return """UPDATE emails_with_events e SET data=jsonb_set(to_jsonb(data), '{events}'::text[], to_jsonb(e2.events)) FROM (SELECT id, json_agg(singleevent) as events FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') ->> 'event_type' as eventtype FROM emails_with_events) as eventarray WHERE eventtype != 'delivery' GROUP BY id) e2 WHERE e.id = e2.id"""

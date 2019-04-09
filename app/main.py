@@ -14,16 +14,27 @@ def run_postgres_scripts():
           postgres_db.execute_all("SELECT count(*) FROM emails_with_events WHERE (data ->> 'from') = 'test@test.com';"))
 
     print("Events before insert:",
-          postgres_db.execute_all("SELECT count(*) FROM (SELECT json_array_elements(data -> 'events') FROM emails_with_events WHERE id = 0) AS events;"))
+          postgres_db.execute_all("SELECT count(*) FROM (SELECT json_array_elements(data -> 'events') FROM emails_with_events WHERE id = '0') AS events;"))
     print("Insert event:",
           postgres_db.run_command(postgres_db.execute, postgres_db.insert_event()))
     print("Events after insert:",
-          postgres_db.execute_all("SELECT count(*) FROM (SELECT json_array_elements(data -> 'events') FROM emails_with_events WHERE id = 0) AS events;"))
+          postgres_db.execute_all("SELECT count(*) FROM (SELECT json_array_elements(data -> 'events') FROM emails_with_events WHERE id = '0') AS events;"))
 
     print("Delete by from:",
           postgres_db.run_command(postgres_db.execute, postgres_db.delete_by_from()))
     print("After delete:",
           postgres_db.execute_all("SELECT count(*) FROM emails_with_events WHERE (data ->> 'from') = 'test@test.com';"))
+
+    print("Delete emails by platform device:",
+          postgres_db.run_command(postgres_db.execute, postgres_db.delete_by_event_device()))
+
+    print("Delete events by platform device:",
+          postgres_db.run_command(postgres_db.execute, postgres_db.delete_event_by_event_device()))
+
+    print("Delete events by event type:",
+          postgres_db.run_command(postgres_db.execute, postgres_db.delete_event_by_event_type()))
+
+
 
 
 def run_mongo_scripts():
