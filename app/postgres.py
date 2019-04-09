@@ -1,7 +1,5 @@
 import psycopg2
-import time
-
-from time import sleep
+from time import sleep, time
 
 
 class PostgresDb:
@@ -12,6 +10,13 @@ class PostgresDb:
             print("DB is not up yet, retry in 1 second")
             sleep(1)
             self.__init__()
+
+    def run_query(self, yaml_conf):
+        cur = self.conn.cursor()
+        start = time()
+        cur.execute(yaml_conf["sql"])
+        end = time()
+        return end - start
 
     def execute_one(self, query):
         cur = self.conn.cursor()
