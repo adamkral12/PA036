@@ -1,5 +1,5 @@
 import psycopg2
-from time import sleep
+from time import sleep, time
 
 
 class PostgresDb:
@@ -11,14 +11,9 @@ class PostgresDb:
             sleep(1)
             self.__init__()
 
-    def select(self):
+    def run_query(self, yaml_conf):
         cur = self.conn.cursor()
-        cur.execute("SELECT * FROM test;")
-        result = cur.fetchone()
-        cur.close()
-        return result
-
-    # should measure the amount of time it took to call `callable`
-    # return start, end
-    def run_command(self, callable):
-        pass
+        start = time()
+        cur.execute(yaml_conf["sql"])
+        end = time()
+        return end - start
