@@ -49,9 +49,30 @@ config:
         id: c0b7a14f34d345eda2666d5159c288de
     description: "Delete event from emails by event type - delivery"
 
-  - sql: UPDATE emails_with_events SET data=jsonb_set(to_jsonb(data), '{from}'::text[], '"test@test.com"'::jsonb) WHERE (data ->> 'from') LIKE '%@hotmail.com'
+  - sql: UPDATE emails_with_events SET data=jsonb_set(data::jsonb, '{from}'::text[], '"test@test.com"'::jsonb) WHERE (data ->> 'from') LIKE '%@hotmail.com'
     mongo:
       method: find
       query:
         id: c0b7a14f34d345eda2666d5159c288de
     description: "Update email from field"
+
+  - sql: UPDATE emails_with_events e SET data=jsonb_set(data::jsonb, '{events}'::text[], e2.events::jsonb) FROM (SELECT id, json_agg(replaced) as events FROM (SELECT id, jsonb_set(singleevent::jsonb, '{user_agent, platform}'::text[], format('"%s"', coalesce((singleevent -> 'user_agent' ->> 'platform'), 'test'))::jsonb) as replaced FROM (SELECT id, json_array_elements(data -> 'events') as singleevent FROM emails_with_events) as replace) as new GROUP BY id) e2 WHERE e.id = e2.id
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Update event device where null"
+
+  - sql: UPDATE emails_with_events e SET data=jsonb_set(data::jsonb, '{events}'::text[], e2.events::jsonb) FROM (SELECT id, json_agg(replaced) as events FROM (SELECT id, jsonb_set(singleevent::jsonb, '{position, city}'::text[], format('"%s"', coalesce((singleevent -> 'position' ->> 'city'), 'test'))::jsonb) as replaced FROM (SELECT id, json_array_elements(data -> 'events') as singleevent FROM emails_with_events) as replace) as new GROUP BY id) e2 WHERE e.id = e2.id
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Update event city where null"
+
+  - sql: SELECT first.id, second.id, first.fromemail, first.toemail, (first.events::jsonb || second.events::jsonb) as joined FROM (SELECT id, (data ->> 'from') as fromemail, (data ->> 'to') as toemail, (data -> 'events') as events FROM emails_with_events) first JOIN (SELECT id, (data ->> 'from') as fromemail, (data ->> 'to') as toemail, (data -> 'events') as events FROM emails_with_events) second ON first.fromemail = second.fromemail AND first.toemail = second.toemail AND first.id != second.id
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Join events where from and to emails match"
