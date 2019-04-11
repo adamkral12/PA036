@@ -5,3 +5,5 @@ postgres/data_small.json
 mongo/emails_with_events.json
 /.idea/*
 .idea
+mongo/mongoinit/data/
+mongo/mongoinit/emails_with_events.json
