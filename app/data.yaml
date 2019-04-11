@@ -76,3 +76,38 @@ config:
       query:
         id: c0b7a14f34d345eda2666d5159c288de
     description: "Join events where from and to emails match"
+
+  - sql: SELECT id, device, count(singleevent) as events FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'user_agent' ->> 'platform' as device FROM emails_with_events) as eventarray  GROUP BY id, device
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Count events for email by device"
+
+  - sql: SELECT * FROM (SELECT id, max(longitude::decimal) as singlemax FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'position' -> 'geographical' ->> 'long' as longitude FROM emails_with_events) as eventarray  GROUP BY id) maxwithid WHERE singlemax=(SELECT max(longitude::decimal) FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'position' -> 'geographical' ->> 'long' as longitude FROM emails_with_events) as localmax)
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Select email with max longitude event"
+
+  - sql: SELECT * FROM (SELECT id, min(latitude::decimal) as singlemin FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'position' -> 'geographical' ->> 'lat' as latitude FROM emails_with_events) as eventarray  GROUP BY id) maxwithid WHERE singlemin=(SELECT min(latitude::decimal) FROM (SELECT id, json_array_elements(data -> 'events') as singleevent, json_array_elements(data -> 'events') -> 'position' -> 'geographical' ->> 'lat' as latitude FROM emails_with_events) as localmax)
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Select email with min latitude event"
+
+  - sql: SELECT count(*) FROM emails_with_events WHERE id in (SELECT id FROM emails_with_events WHERE (data -> 'sent')::jsonb ? 'timezone'::text)
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Count emails where timezone exists in sent"
+
+  - sql: SELECT count(*) FROM emails_with_events WHERE id in (SELECT DISTINCT id FROM (SELECT id, json_array_elements(data -> 'events') -> 'position' as position FROM emails_with_events) as events WHERE position::jsonb ? 'timezone'::text)
+    mongo:
+      method: find
+      query:
+        id: c0b7a14f34d345eda2666d5159c288de
+    description: "Count emails where timezone exists in position of event"
