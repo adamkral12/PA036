@@ -17,7 +17,7 @@ services:
       - postgres
 #   output stat files to /dont/do/ in python, sync here into ./docker/pylo
     volumes:
-      - ./docker/pylo:/dont/do/
+      - ./output:/output
   mongo:
     ports:
       - "27017:27017"

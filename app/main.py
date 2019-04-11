@@ -1,8 +1,10 @@
 from app.postgres import PostgresDb
 from app.mongo import MongoDB
 import yaml
+import csv
 
 if __name__ == '__main__':
+
     mongo_db = MongoDB()
     postgres_db = PostgresDb()
     log_output = []
@@ -22,5 +24,13 @@ if __name__ == '__main__':
         })
 
         i += 1
+
+    csv_file = "/output/data.csv"
+    csv_columns = ['mongo_time', 'postgres_time', 'description', 'id']
+    with open(csv_file, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in log_output:
+            writer.writerow(data)
 
     print(log_output)
