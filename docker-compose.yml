@@ -19,8 +19,6 @@ services:
     volumes:
       - ./docker/pylo:/dont/do/
   mongo:
-    volumes:
-      - ./docker/data/db/mongo:/data/db/
     ports:
       - "27017:27017"
     build: ./mongo
