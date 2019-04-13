@@ -7,3 +7,4 @@ mongo/emails_with_events.json
 .idea
 mongo/mongoinit/data/
 mongo/mongoinit/emails_with_events.json
+output/
