@@ -16,4 +16,5 @@ class PostgresDb:
         start = time()
         cur.execute(yaml_conf["sql"])
         end = time()
+        print("PostgreSQL -- postgres result number: " + str(cur.rowcount))
         return end - start

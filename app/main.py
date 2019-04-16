@@ -13,6 +13,7 @@ if __name__ == '__main__':
 
     i = 0
     for query in queries["config"]:
+        print(str(i) + " Executing query: " + query["description"])
         mongo_time = mongo_db.run_query(query)
         pg_time = postgres_db.run_query(query)
 
