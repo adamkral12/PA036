@@ -4,15 +4,14 @@
 1) install docker & docker-compose
 2) Add data for postgres
     - create postgres/emails_with_events.json
-    - create postgres/emails_with_events2.json
-2) run ``docker-compose up -d``
-    - data should be filled from files above 
-3) to stop the containers ``docker-compose down``
-4) If you change the source code, run ``docker-compose up --build`` to propagate changes
-5) If you want to throw out all DB data (even schema), remove `docker/data`
-6) add any needed python packages to `requirements.txt`
-7) To connect to connect to a container e.g. postgres: `docker exec -it pa036_postgres bash`
-8) 
+3) Add data for mongo
+    - create mongo/mongoinit/emails_with_events.json
+4) run ``cd mongo && ./init.sh``    - fills mongo db image with data
+5) run ``docker-compose build``
+6) run ``docker-compose up -d``
+    - data should be filled from files above
+7) To run test runs, run ``./docker_master.sh`` - choose required number of iterations in the script
+7) to stop the containers ``docker-compose down``
 ## Adminer
 1) there is an adminer running on `http://localhost:99`
 2) you can check the DB there

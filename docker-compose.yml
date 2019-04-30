@@ -15,7 +15,6 @@ services:
     links:
       - mongo
       - postgres
-#   output stat files to /dont/do/ in python, sync here into ./docker/pylo
     volumes:
       - ./output:/output
   mongo:
