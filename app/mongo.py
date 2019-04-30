@@ -24,40 +24,28 @@ class MongoDB:
 
         if method == "INSERT_ONE":
             start = time()
-            res = self.emails_col.insert_one(json_value)
+            self.emails_col.insert_one(json_value)
             end = time()
-            print("MongoDB -- inserted id: " + str(res.inserted_id))
         elif method == "INSERT_MANY":
             start = time()
-            res = self.emails_col.insert_many(json_value)
+            self.emails_col.insert_many(json_value)
             end = time()
-            print("MongoDB -- number of inserted items: " + str(len(res.inserted_ids)))
         elif method == "UPDATE_MANY":
             start = time()
-            res = self.emails_col.update_many(json_filter, json_value, array_filters = json_array_filters)
+            self.emails_col.update_many(json_filter, json_value, array_filters = json_array_filters)
             end = time()
-            print("MongoDB -- number of modified: " + str(res.modified_count))
         elif method == "DELETE_MANY":
             start = time()
-            res = self.emails_col.delete_many(json_filter)
+            self.emails_col.delete_many(json_filter)
             end = time()
-            print("MongoDB -- mongo number of deleted: " + str(res.deleted_count))
         elif method == "FIND":
             start = time()
-            res = self.emails_col.find(json_filter)
+            self.emails_col.find(json_filter)
             end = time()
-            print("MongoDB -- number of found: " + str(res.count_documents()))
         elif method == "AGGREGATE":
             start = time()
-            res = self.emails_col.aggregate(json_filter, allowDiskUse=True)
+            self.emails_col.aggregate(json_filter, allowDiskUse=True)
             end = time()
-            print("MongoDB -- number of found: " + self.count_result(res))
         else:
             raise ValueError("Unexpected method in yaml file: " + method)
         return end - start
-
-    def count_result(self, cursor):
-        i = 0
-        for doc in cursor:
-            i += 1
-        return str(i)
